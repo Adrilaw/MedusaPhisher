@@ -36,5 +36,5 @@ Adrilaw (GitHub)
 https://github.com/8L4NK/blackeye/ use his phishing pages. 
 
 # License
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the GNU General Public License  - see the LICENSE file for details.
 
