@@ -9,7 +9,9 @@ Catch credentials entered into phishing pages for analysis.
 
 # Dependencies
 PHP: Required for hosting the phishing pages locally.
+
 SSH: Necessary for creating SSH tunnels using localhost.run.
+
 GNOME Terminal: Optional but recommended for a better user experience.
 
 # Usage
