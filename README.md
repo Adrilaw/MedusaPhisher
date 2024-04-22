@@ -13,7 +13,6 @@ SSH: Necessary for creating SSH tunnels using localhost.run.
 GNOME Terminal: Optional but recommended for a better user experience.
 
 # Usage
-## Usage
 
 1. Clone the repository: `git clone https://github.com/Adrilaw/Medusa-Phisher.git`
 2. Navigate to the script directory: `cd Medusa-Phisher`
