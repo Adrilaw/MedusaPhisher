@@ -33,7 +33,7 @@ This script is intended for educational purposes only. The misuse of this tool f
 Adrilaw (GitHub)
 
 # Credit 
-https://github.com/8L4NK/blackeye/ use his phishing page 
+https://github.com/8L4NK/blackeye/ use his phishing pages. 
 
 # License
 This project is licensed under the MIT License - see the LICENSE file for details.
