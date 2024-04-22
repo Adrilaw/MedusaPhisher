@@ -6,6 +6,7 @@ Create phishing pages for multiple online services.
 Host phishing pages using localhost.run for easy access.
 Customizable phishing page creation for a tailored approach.
 Catch credentials entered into phishing pages for analysis.
+The generated phishing link will be displayed, along with its QR code for easy access.
 
 # Dependencies
 PHP: Required for hosting the phishing pages locally.
@@ -21,7 +22,7 @@ GNOME Terminal: Optional but recommended for a better user experience.
 3. Ensure all dependencies are installed and configured (see Dependencies section).
 4. Run the script: `./medusa_phisher.sh`
 5. Follow the on-screen menu to select a phishing target and start the phishing process.
-6. The generated phishing link will be displayed, along with its QR code for easy access. The link is hosted using localhost.run for seamless link generation and access.
+
 
 # Disclaimer
 This script is intended for educational purposes only. The misuse of this tool for illegal activities is strictly prohibited. The author assumes no responsibility for any misuse of this script.
