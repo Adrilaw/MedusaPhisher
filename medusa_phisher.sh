@@ -46,46 +46,6 @@ open_page() {
     open "$url"
 }
 
-# Function to get dependencies list
-get_dependencies_list() {
-    local dependencies=()
-
-    # Extract dependencies mentioned in the script
-    while IFS= read -r line; do
-        # Check for commands and extract dependencies
-        if [[ "$line" == *"xterm"* ]]; then
-            dependencies+=("xterm")
-        fi
-        if [[ "$line" == *"php"* ]]; then
-            dependencies+=("php")
-        fi
-        if [[ "$line" == *"ssh"* ]]; then
-            dependencies+=("ssh")
-        fi
-    done < "$0" # Read from the current script file
-
-    # Remove duplicates
-    dependencies=($(echo "${dependencies[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-
-    # Print the list of dependencies
-    echo "${dependencies[@]}"
-}
-
-# Function to print a colored line
-print_colored_line() {
-    echo -e "\e[1;34m-------------------------------------------------------------------\e[0m"
-}
-
-# Call the function to get the dependencies list
-dependencies_list=$(get_dependencies_list)
-
-# Print the dependencies list with a colored line above
-print_colored_line
-echo -e "\e[1;33mDependencies list:\e[0m"
-echo "$dependencies_list"
-print_colored_line
-
-
 
 start_server() {
     server=$1
