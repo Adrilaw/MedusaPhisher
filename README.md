@@ -20,9 +20,11 @@ XTERM: Necessary to generate link and QR code.
 1. Clone the repository: `git clone https://github.com/Adrilaw/Medusa-Phisher.git`
 2. Navigate to the script directory: `cd MedusaPhisher`
 3. Ensure all dependencies are installed and configured (see Dependencies section).
-4. Grants execution permissions to script: `chmod +x  medusa_phisher.sh` 
-5. Run the script: `sudo bash medusa_phisher.sh`
-6. Follow the on-screen menu to select a phishing target and start the phishing process.
+4. Grants execution permissions to medusa_phisher script: `chmod +x  medusa_phisher.sh`
+5. Grants execution permissions to setup script: `chmod +x  setup.sh`
+6. The script installs the required dependencies for running the Medusa Phisher script: `sudo ./setup.sh`
+7. Run the script: `sudo ./medusa_phisher.sh`
+8. Follow the on-screen menu to select a phishing target and start the phishing process.
 
 ![Screenshot (2)](https://github.com/Adrilaw/MedusaPhisher/assets/65346144/d101a310-30e2-4298-b3a4-e39688b29ec7)
 
