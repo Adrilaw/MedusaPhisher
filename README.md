@@ -17,7 +17,7 @@ XTERM: Necessary to generate link and QR code.
 
 # Usage
 
-1. Clone the repository: `git clone https://github.com/Adrilaw/Medusa-Phisher.git`
+1. Clone the repository: `git clone https://github.com/Adrilaw/MedusaPhisher.git`
 2. Navigate to the script directory: `cd MedusaPhisher`
 3. Ensure all dependencies are installed and configured (see Dependencies section).
 4. Grants execution permissions to medusa_phisher script: `chmod +x  medusa_phisher.sh`
