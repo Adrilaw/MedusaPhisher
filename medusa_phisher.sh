@@ -34,9 +34,7 @@ clear_terminal
 
 # Display the big welcome message
 big_welcome
-
-# Execute Medusa Phisher
-./medusa_phisher.sh
+sleep 2
 
 
 
