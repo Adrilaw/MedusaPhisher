@@ -26,7 +26,9 @@ XTERM: Necessary to generate link and QR code.
 7. Run the script: `sudo ./medusa_phisher.sh`
 8. Follow the on-screen menu to select a phishing target and start the phishing process.
 
-![Screenshot (2)](https://github.com/Adrilaw/MedusaPhisher/assets/65346144/d101a310-30e2-4298-b3a4-e39688b29ec7)
+
+![Screenshot (4)](https://github.com/Adrilaw/MedusaPhisher/assets/65346144/75af71ae-c410-4fe5-a628-f4b46f695ee6)
+
 
 
 
