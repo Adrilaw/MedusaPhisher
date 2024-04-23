@@ -22,6 +22,7 @@ XTERM: Necessary to generate link and QR code.
 3. Ensure all dependencies are installed and configured (see Dependencies section).
 4. Run the script: `sudo bash medusa_phisher.sh`
 5. Follow the on-screen menu to select a phishing target and start the phishing process.
+
 ![Screenshot (2)](https://github.com/Adrilaw/MedusaPhisher/assets/65346144/d101a310-30e2-4298-b3a4-e39688b29ec7)
 
 
