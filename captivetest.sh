@@ -137,7 +137,7 @@ start_fake_ap() {
     server_login_page=$(ls ./sites/"$server"/login.*)
 
     # Start fake AP with the selected server's login page
-    gnome-terminal -- airbase-ng -a AA:BB:CC:DD:EE:FF -e "OpenWiFi by SMPP" -c 6 -P "$server_login_page" "$interface" &
+    xterm -- airbase-ng -a AA:BB:CC:DD:EE:FF -e "OpenWiFi by SMPP" -c 6 -P "$server_login_page" "$interface" &
 }
 
 # Function to continuously display captured credentials
