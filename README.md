@@ -39,5 +39,5 @@ This script is intended for educational purposes only. The misuse of this tool f
 Adrilaw (GitHub)
 
 # License
-This project is licensed under the GNU General Public License [GNU General Public License] - see the LICENSE file for details.
+This project is licensed under the GNU General Public [GNU General Public License] License - see the LICENSE file for details.
 
