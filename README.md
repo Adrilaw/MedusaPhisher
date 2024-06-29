@@ -24,7 +24,7 @@ XTERM: Necessary to generate link and QR code.
 5. Grants execution permissions to setup script: `chmod +x  setup.sh`
 6. The script installs the required dependencies for running the Medusa Phisher script: `sudo ./setup.sh`
 7. Run the script: `sudo ./medusa_phisher.sh`
-8. Follow the on-screen menu to select a phishing target and start the phishing process.
+8. Follow the on-screen menu to select a phishing target and start the phishing process. NOTE:The link is generated in the xterm terminal also a QR code too.
 
 
 ![Screenshot (4)](https://github.com/Adrilaw/MedusaPhisher/assets/65346144/75af71ae-c410-4fe5-a628-f4b46f695ee6)
