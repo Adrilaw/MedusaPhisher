@@ -46,6 +46,7 @@ This script is intended for educational purposes only. The misuse of this tool f
 
 # Author
 Adrilaw @ GitHub
+
 Kidpentest @ xda-developers
 # License
 This project is licensed under the [GNU General Public License](LICENSE) - see the LICENSE file for details.
