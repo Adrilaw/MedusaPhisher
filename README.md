@@ -48,7 +48,10 @@ Note: `setup.sh` installs those dependencies for you
 8. Follow the on-screen menu to select a phishing target and start the phishing process. NOTE:The link is generated in the xterm terminal with a QR code too.
 
 # Demo
-![Capture d'écran 2024-07-23 092742](https://github.com/user-attachments/assets/0602e9d4-8bcc-474d-a074-69e7f3ef461a)
+
+https://github.com/user-attachments/assets/a8c732ad-6c6a-4b5b-b14a-40621e5ea982
+
+
 
 
 
