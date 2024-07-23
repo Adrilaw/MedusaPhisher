@@ -38,7 +38,8 @@ Note: `setup.sh` installs those dependencies for you
 8. Follow the on-screen menu to select a phishing target and start the phishing process. NOTE:The link is generated in the xterm terminal with a QR code too.
 
 
-![Screenshot (4)](https://github.com/Adrilaw/MedusaPhisher/assets/65346144/75af71ae-c410-4fe5-a628-f4b46f695ee6)
+![Capture d'écran 2024-07-23 092742](https://github.com/user-attachments/assets/0602e9d4-8bcc-474d-a074-69e7f3ef461a)
+
 
 
 
