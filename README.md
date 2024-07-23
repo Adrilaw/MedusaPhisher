@@ -1,30 +1,32 @@
-# Medusa Phisher v1.0
+## Medusa Phisher v1.0
 Medusa Phisher is a phishing tool script designed to create phishing pages for various online services. It allows users to set up phishing pages for services like Instagram, Facebook, Twitter, and more. The script facilitates hosting these phishing pages using localhost.run for tunnelling, making it easy to capture user credentials.
 
-# Features
+## Features
 Create phishing pages for multiple online services.
 Host phishing pages using localhost.run for easy access.
 Customizable phishing page creation for a tailored approach.
 Catch credentials entered into phishing pages for analysis.
 The generated phishing link will be displayed, along with its QR code for easy access.
 
-# Dependencies
+## Dependencies
 PHP: Required for hosting the phishing pages locally.
 
 SSH: Necessary for creating SSH tunnels using localhost.run.
 
 XTERM: Necessary to generate link and QR code.
 
-# Supported Environment
+Note: `setup.sh` installs those dependencies for you
+
+## Supported Environment
 Kali Linux
 
-Parrot security os
+# Parrot security os
 
-Debian
+# Debian
 
-Ubuntu
+# Ubuntu
 
-# Usage
+## Usage
 
 1. Clone the repository: `git clone https://github.com/Adrilaw/MedusaPhisher.git`
 2. Navigate to the script directory: `cd MedusaPhisher`
@@ -47,7 +49,8 @@ This script is intended for educational purposes only. The misuse of this tool f
 # Author
 Adrilaw @ GitHub
 
-Kidpentest @ xda-developers
+Kidpentester @ xda-developers
+
 # License
 This project is licensed under the [GNU General Public License](LICENSE) - see the LICENSE file for details.
 
