@@ -15,6 +15,12 @@ SSH: Necessary for creating SSH tunnels using localhost.run.
 
 XTERM: Necessary to generate link and QR code.
 
+# Supported Environment
+Kali Linux
+Parrot security os
+Debian 
+Ubuntu
+
 # Usage
 
 1. Clone the repository: `git clone https://github.com/Adrilaw/MedusaPhisher.git`
