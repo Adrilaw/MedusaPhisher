@@ -34,6 +34,8 @@ Note: `setup.sh` installs those dependencies for you
 
 ## Ubuntu
 
+## Arch
+
 # Usage
 
 1. Clone the repository: `git clone https://github.com/Adrilaw/MedusaPhisher.git`
