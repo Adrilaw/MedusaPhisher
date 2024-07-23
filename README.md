@@ -17,8 +17,11 @@ XTERM: Necessary to generate link and QR code.
 
 # Supported Environment
 Kali Linux
+
 Parrot security os
-Debian 
+
+Debian
+
 Ubuntu
 
 # Usage
