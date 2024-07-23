@@ -3,11 +3,17 @@ Medusa Phisher is a phishing tool script designed to create phishing pages for v
 
 # Features
 Create phishing pages for multiple online services.
+
 Host phishing pages using localhost.run for easy access.
+
 Customizable phishing page creation for a tailored approach.
+
 Catch credentials entered into phishing pages for analysis.
+
 Add option to choose either to use default port or custom.
+
 Added function to keep script running after capturing creds to enable user to continue testing.
+
 The generated phishing link will be displayed, along with its QR code for easy access.
 
 # Dependencies
