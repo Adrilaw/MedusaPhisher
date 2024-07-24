@@ -12,9 +12,7 @@ Medusa Phisher is a phishing tool script designed to create phishing pages for v
 
 5. Add option to choose either to use default port or custom.
 
-6. Added function to keep script running after capturing creds to enable user to continue testing.
-
-7. The generated phishing link will be displayed, along with its QR code for easy access.
+6. The generated phishing link will be displayed, along with its QR code for easy access.
 
 # Dependencies
 • PHP: Required for hosting the phishing pages locally.
