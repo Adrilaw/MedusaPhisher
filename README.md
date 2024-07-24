@@ -47,7 +47,7 @@ Medusa Phisher is a phishing tool script designed to create phishing pages for v
 
 # Demo
 
-https://github.com/user-attachments/assets/a8c732ad-6c6a-4b5b-b14a-40621e5ea982
+https://github.com/user-attachments/assets/a2190ffe-a79b-4371-8c97-1c5a1e5004ae
 
 
 
