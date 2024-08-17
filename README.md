@@ -27,7 +27,7 @@ Medusa Phisher is a phishing tool script designed to create phishing pages for v
 • Note: `setup.sh` installs those dependencies for you
 
 # Supported Environment
-## • [Kali Linux](kali.org)
+## • Kali Linux
 
 ## • Parrot security os
 
