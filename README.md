@@ -1,8 +1,6 @@
 # Medusa Phisher v1.3
 Medusa Phisher is a phishing tool script designed to create phishing pages for various online services. It allows users to set up phishing pages for services like Instagram, Facebook, Twitter, and more. The script facilitates hosting these phishing pages using localhost.run for tunnelling, making it easy to capture user credentials.
-[
-![Screenshot at 2024-07-31 15-37-44](https://github.com/user-attachments/assets/9777d2cf-dd20-49ae-940f-bb3ee59b31c8)
-](url)
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/4bdc1c9b-497b-4094-9074-b291071341ca" />
 
 # Features
 1. Create phishing pages for multiple online services.
