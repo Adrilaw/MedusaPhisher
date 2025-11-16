@@ -67,5 +67,5 @@ Adrilaw @ GitHub
 Kidpentester @ xda-developers
 
 # License
-MedusaPhisher is licensed under the [GNU General Public License](LICENSE) and the [MedusaPhisher Commercial License](CLICENSE)- see the LICENSE file for details.
+MedusaPhisher is licensed under the [GNU General Public License](LICENSE) and the [MedusaPhisher Commercial License](C-LICENSE)- see the LICENSE file for details.
 
