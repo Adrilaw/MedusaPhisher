@@ -2,20 +2,24 @@ MEDUSA PHISHER LICENSE
 
 Copyright (c) 2025 Adrilaw
 
-PERMITTED:
+PERMITTED USE:
 - Personal use
-- Educational purposes  
-- Security research
-- Non-commercial distribution
+- Educational use
+- Security research and testing
+- Non-commercial distribution, provided this license is included
 
-RESTRICTED:
-- Commercial use
-- Selling this software or derivatives
-- Incorporating into commercial products
+RESTRICTED USE (NOT ALLOWED WITHOUT WRITTEN PERMISSION):
+- Any commercial use of this software or derivative works
+- Selling, licensing, or monetizing this software or any modified version
+- Incorporating this software into paid products, services, or commercial tools
 
-COMMERCIAL TERMS:
-For commercial licensing or revenue-sharing agreements, 
-contact: adrien111dodin@gmail.com/Adrilaw
+COMMERCIAL LICENSING:
+Commercial rights are not granted under this license.  
+For commercial licensing, partnership agreements, or revenue-sharing terms,  
+contact: **adrien111dodin@gmail.com** or **GitHub: Adrilaw**
 
-This software is provided "as is" without warranty. 
-User assumes all liability for misuse.
+DISCLAIMER:
+This software is provided "as is" without any warranties, express or implied.  
+The author is not responsible for any damage, loss, or misuse resulting from  
+the use of this software. The user assumes all responsibility for compliance  
+with applicable laws and ethical guidelines.
